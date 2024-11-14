@@ -1,0 +1,74 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id String @id @default(uuid()) @map("_id")
+  userId String @unique
+  name String
+  imageUrl String @db.String
+  email String @db.String
+
+  servers Server[]
+
+
+  createdAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  Member Member[]
+}
+
+model Server{
+  id String @id @default(uuid()) @map("_id")
+  name String
+  imageUrl String @db.String
+  inviteCode String @db.String
+
+member Member[]
+
+ profileId String
+ profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+ createdAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([profileId])
+}
+
+enum MemberRole{
+  ADMIN
+  MODERATOR
+  GUEST
+}
+
+model Member{
+  id String @id @default(uuid()) @map("_id")
+  role MemberRole @default(GUEST)
+
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+serverId String
+  server Server @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+ createdAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+
+  @@index([profileId])
+  @@index([serverId])
+  
+}
+
+enum ChannelType{
+  TEXT 
+  AUDIO
+  VIDEO
+}
