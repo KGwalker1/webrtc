@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import "@uploadthing/react/styles.css";
 import {
   ClerkProvider,
   SignInButton,
